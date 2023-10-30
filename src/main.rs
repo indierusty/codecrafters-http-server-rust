@@ -64,28 +64,5 @@ fn handle_client(mut stream: TcpStream) {
         _ => "HTTP/1.1 404 NOT FOUND\r\n\r\n".to_string(),
     };
 
-    // let response = if path == "/" {
-    //     "HTTP/1.1 200 OK \r\n\r\n".to_string()
-    // } else {
-    //     if let Some("echo") = path.split(|c| c == '/').nth(1) {
-    //         let random_str = path
-    //             .trim_matches('/')
-    //             .split_once(|c| c == '/')
-    //             .unwrap()
-    //             .1
-    //             .to_string();
-
-    //         println!("{}", random_str);
-
-    //         format!(
-    //             "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\nContent-Length: {}\r\n\r\n{}",
-    //             random_str.len(),
-    //             random_str
-    //         )
-    //     } else {
-    //         "HTTP/1.1 404 NOT FOUND\r\n\r\n".to_string()
-    //     }
-    // };
-
     stream.write(response.as_bytes()).unwrap();
 }
