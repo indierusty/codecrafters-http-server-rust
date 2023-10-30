@@ -84,7 +84,7 @@ fn handle_client(mut stream: TcpStream) {
             if path.is_file() {
                 let file_content = fs::read_to_string(path).unwrap();
                 format!(
-                    "HTTP/1.1 200 OK\r\nContent-Type: application/octen-stream\r\nContent-Length: {}\r\n\r\n{}\r\n",
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {}\r\n\r\n{}\r\n",
                     file_content.len(),
                     file_content
                 )
