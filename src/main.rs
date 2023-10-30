@@ -19,11 +19,14 @@ fn handle_client(mut stream: TcpStream) {
     stream.read(&mut buffer).unwrap();
     let request_str = std::str::from_utf8(&buffer).unwrap();
 
-    let response = if request_str.split_whitespace().nth(1).unwrap() == "/" {
-        "HTTP/1.1 200 OK        \r\n\r\n"
-    } else {
-        "HTTP/1.1 404 NOT FOUND \r\n\r\n"
-    };
+    let path = request_str.split_whitespace().nth(1).unwrap();
+    let random_str = path.split(|c| c == '/').nth(2).unwrap();
+
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\nContent-Length: {}\r\n\r\n{}",
+        random_str.len(),
+        random_str
+    );
 
     stream.write(response.as_bytes()).unwrap();
 }
