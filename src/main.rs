@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use std::fs;
 // Uncomment this block to pass the first stage
 use std::io::{Read, Result, Write};
 use std::net::{TcpListener, TcpStream};
+use std::path::Path;
 use threadpool::ThreadPool;
 
 const ADDRESS: &str = "127.0.0.1:4221";
@@ -59,6 +61,36 @@ fn handle_client(mut stream: TcpStream) {
                 user_agent.len(),
                 user_agent
             )
+        }
+        c if c.starts_with("/files") => {
+            let file_name = Path::new(path.split_once("files/").unwrap().1);
+
+            let mut file_path = "".to_string();
+            let mut arg = std::env::args().peekable();
+
+            loop {
+                if let Some(next_arg) = arg.next() {
+                    if next_arg == "--directory" {
+                        if let Some(file) = arg.next() {
+                            file_path = file.to_string();
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            let path = Path::new(&file_path).join(Path::new(file_name));
+            if path.is_file() {
+                let file_content = fs::read_to_string(path).unwrap();
+                format!(
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/octen-stream\r\nContent-Length: {}\r\n\r\n{}\r\n",
+                    file_content.len(),
+                    file_content
+                )
+            } else {
+                "HTTP/1.1 404 NOT FOUND\r\n\r\n".to_string()
+            }
         }
         _ => "HTTP/1.1 404 NOT FOUND\r\n\r\n".to_string(),
     };
