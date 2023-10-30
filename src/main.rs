@@ -32,8 +32,6 @@ fn handle_client(mut stream: TcpStream) {
                 .1
                 .to_string();
 
-            println!("{}", random_str);
-
             format!(
                 "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\nContent-Length: {}\r\n\r\n{}",
                 random_str.len(),
@@ -52,7 +50,10 @@ fn handle_client(mut stream: TcpStream) {
             // }
 
             println!("{:?}", headers);
-            let user_agent = headers.get("User-Agent").unwrap_or(&"NOTFOUND user-agent");
+            let user_agent = headers
+                .get("User-Agent")
+                .unwrap_or(&"NOTFOUND user-agent")
+                .trim();
 
             format!(
                 "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",
