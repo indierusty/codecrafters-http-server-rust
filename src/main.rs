@@ -2,14 +2,16 @@ use std::collections::HashMap;
 // Uncomment this block to pass the first stage
 use std::io::{Read, Result, Write};
 use std::net::{TcpListener, TcpStream};
+use threadpool::ThreadPool;
 
 const ADDRESS: &str = "127.0.0.1:4221";
 
 fn main() -> Result<()> {
     let listener = TcpListener::bind(ADDRESS)?;
 
+    let pool = ThreadPool::new(4);
     for stream in listener.incoming() {
-        handle_client(stream?)
+        pool.execute(|| handle_client(stream.unwrap()));
     }
 
     Ok(())
@@ -41,15 +43,12 @@ fn handle_client(mut stream: TcpStream) {
         "/user-agent" => {
             // parse headers
             let mut headers: HashMap<&str, &str> = HashMap::new();
-            // if let Some(h) = request_str.split("\r\n\r\n").nth(0) {
             for line in request_str.lines() {
                 if let Some((k, v)) = line.split_once(":") {
                     headers.insert(k, v);
                 }
             }
-            // }
 
-            println!("{:?}", headers);
             let user_agent = headers
                 .get("User-Agent")
                 .unwrap_or(&"NOTFOUND user-agent")
