@@ -1,4 +1,3 @@
-use nom::AsBytes;
 use std::collections::HashMap;
 use std::fs;
 use std::io::{Read, Result, Write};
@@ -262,6 +261,7 @@ fn user_agent(request: &Request) -> Response {
         .http_version("HTTP/1.1".to_string())
         .status_code(200)
         .status_message("OK".to_string())
+        .headers(headers)
         .body(
             request
                 .headers
@@ -347,6 +347,9 @@ fn post_file(request: &Request) -> Response {
         .expect("Write request body to file");
 
     Response::new()
+        .http_version("HTTP/1.1".to_string())
+        .status_code(201)
+        .status_message("OK".to_string())
 }
 
 fn handle(mut stream: TcpStream) {
