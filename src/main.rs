@@ -301,7 +301,7 @@ fn get_file(request: &Request) -> Response {
         let mut headers = HashMap::new();
         headers.insert(
             "Content-Type".to_string(),
-            "application/octent-stream".to_string(),
+            "application/octet-stream".to_string(),
         );
         headers.insert(
             "Content-Length".to_string(),
